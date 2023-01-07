@@ -100,12 +100,6 @@ plugins:
   - grpcs
   - http
   - https
-vaults:
-- config:
-    prefix: my-prefix
-  description: Store secrets in environment variables
-  name: env
-  prefix: env
 services:
 - connect_timeout: 60000
   enabled: true
@@ -132,7 +126,7 @@ services:
           body: []
           headers: []
           querystring:
-          - api_key:IkwExPgnOVMV1P3F67zP4BN0XEekYzRH8aonPYmb
+          - api_key:{vault://env/NASA_API}
         append:
           body: []
           headers: []
@@ -280,3 +274,8 @@ services:
   tags:
   - _KonnectService:WorldTimeAPI
   write_timeout: 60000
+vaults:
+- config:
+    prefix: env
+  name: env
+  prefix: my-vault

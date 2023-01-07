@@ -216,7 +216,7 @@ services:
 - connect_timeout: 60000
   enabled: true
   host: api.nasa.gov
-  name: worldtimeapi
+  name: apod
   path: /planetary/apod
   port: 443
   protocol: https

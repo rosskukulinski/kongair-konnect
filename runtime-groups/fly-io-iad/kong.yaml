@@ -126,7 +126,7 @@ services:
           body: []
           headers: []
           querystring:
-          - api_key:{vault://env/NASA_API}
+          - api_key:IkwExPgnOVMV1P3F67zP4BN0XEekYzRH8aonPYmb
         append:
           body: []
           headers: []

@@ -164,8 +164,8 @@ services:
   write_timeout: 60000
 - connect_timeout: 60000
   enabled: true
-  host: mockbin.org
-  name: mockbin
+  host: echo.zuplo.io
+  name: echoserver
   path: /
   port: 443
   protocol: https
@@ -177,7 +177,7 @@ services:
     https_redirect_status_code: 426
     methods:
     - GET
-    name: root
+    name: dp
     path_handling: v0
     preserve_host: false
     protocols:

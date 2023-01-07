@@ -11,6 +11,11 @@ jobs:
       runs-on: ubuntu-latest
       steps:
         - uses: actions/checkout@v3
-        - uses: superfly/flyctl-actions/setup-flyctl@master
-        - run: source bin/getDeckAction.sh
+        - uses: giantswarm/install-binary-action@v1.0.0
+          with:
+              binary: "deck"
+              version: "v1.17.1"
+              download_url: "https://github.com/Kong/deck/releases/download/${version}/${binary}_${version}_linux_amd64.tar.gz"
+              tarball_binary_path: "${binary}"
+              smoke_test: "${binary} --version"
         - run: deck diff --konnect-runtime-group-name=fly-io-iad runtime-groups/fly-io-iad

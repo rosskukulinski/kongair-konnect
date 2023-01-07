@@ -102,7 +102,7 @@ plugins:
   - https
 vaults:
 - config:
-    prefix: null
+    prefix: my-prefix
   description: Store secrets in environment variables
   name: env
   prefix: env

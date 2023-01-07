@@ -1,0 +1,215 @@
+_format_version: "3.0"
+_konnect:
+  runtime_group_name: fly-io-iad
+plugins:
+- config:
+    bypass_on_err: false
+    cache_control: false
+    cache_ttl: 300
+    content_type:
+    - text/plain
+    - application/json
+    - application/json; charset=utf-8
+    - text/yaml; charset=utf-8
+    memory:
+      dictionary_name: kong_db_cache
+    redis:
+      cluster_addresses: null
+      connect_timeout: null
+      database: 0
+      host: fly-kong-cache.upstash.io
+      keepalive_backlog: null
+      keepalive_pool_size: 30
+      password: f072e50ecb8643a0844c65915b65f4f7
+      port: 6379
+      read_timeout: null
+      send_timeout: null
+      sentinel_addresses: null
+      sentinel_master: null
+      sentinel_password: null
+      sentinel_role: null
+      sentinel_username: null
+      server_name: null
+      ssl: false
+      ssl_verify: false
+      timeout: 2000
+      username: null
+    request_method:
+    - GET
+    - HEAD
+    response_code:
+    - 200
+    - 301
+    - 404
+    storage_ttl: null
+    strategy: redis
+    vary_headers: null
+    vary_query_params: null
+  enabled: true
+  name: proxy-cache-advanced
+  protocols:
+  - grpc
+  - grpcs
+  - http
+  - https
+- config:
+    consumer_groups: []
+    dictionary_name: kong_rate_limiting_counters
+    disable_penalty: false
+    enforce_consumer_groups: false
+    error_code: 429
+    error_message: API rate limit exceeded
+    header_name: null
+    hide_client_headers: false
+    identifier: ip
+    limit:
+    - 50
+    namespace: 1zQRNYaVfOVp7SmpDSMk8kw1FleURUAi
+    path: null
+    redis:
+      cluster_addresses: null
+      connect_timeout: null
+      database: 0
+      host: fly-kong-cache.upstash.io
+      keepalive_backlog: null
+      keepalive_pool_size: 30
+      password: f072e50ecb8643a0844c65915b65f4f7
+      port: 6379
+      read_timeout: null
+      send_timeout: null
+      sentinel_addresses: null
+      sentinel_master: null
+      sentinel_password: null
+      sentinel_role: null
+      sentinel_username: null
+      server_name: null
+      ssl: false
+      ssl_verify: false
+      timeout: 2000
+      username: null
+    retry_after_jitter_max: 0
+    strategy: redis
+    sync_rate: 10
+    window_size:
+    - 60
+    window_type: fixed
+  enabled: true
+  name: rate-limiting-advanced
+  protocols:
+  - grpc
+  - grpcs
+  - http
+  - https
+services:
+- connect_timeout: 60000
+  enabled: true
+  host: mockbin.org
+  name: mockbin
+  path: /
+  port: 443
+  protocol: https
+  read_timeout: 60000
+  retries: 5
+  routes:
+  - hosts:
+    - dp.ross.dev
+    https_redirect_status_code: 426
+    methods:
+    - GET
+    name: root
+    path_handling: v0
+    preserve_host: false
+    protocols:
+    - http
+    regex_priority: 0
+    request_buffering: true
+    response_buffering: true
+    strip_path: true
+  tags:
+  - _KonnectService:Mockbin
+  write_timeout: 60000
+- connect_timeout: 60000
+  enabled: true
+  host: api.wheretheiss.at
+  name: whereistheiss
+  path: /v1/satellites/25544
+  port: 443
+  protocol: https
+  read_timeout: 60000
+  retries: 5
+  routes:
+  - hosts:
+    - api.ross.dev
+    https_redirect_status_code: 426
+    methods:
+    - GET
+    name: iss
+    path_handling: v0
+    paths:
+    - /iss
+    preserve_host: false
+    protocols:
+    - http
+    regex_priority: 0
+    request_buffering: true
+    response_buffering: true
+    strip_path: true
+  tags:
+  - _KonnectService:ISS
+  write_timeout: 60000
+- connect_timeout: 60000
+  enabled: true
+  host: worldtimeapi.org
+  name: worldtimeapi
+  path: /api
+  port: 80
+  protocol: http
+  read_timeout: 60000
+  retries: 5
+  routes:
+  - hosts:
+    - api.ross.dev
+    https_redirect_status_code: 426
+    methods:
+    - GET
+    name: worldtime
+    path_handling: v0
+    paths:
+    - /worldtime
+    plugins:
+    - config:
+        add:
+          headers: []
+          json: []
+          json_types: []
+        append:
+          headers: []
+          json: []
+          json_types: []
+        remove:
+          headers:
+          - Cache-Control
+          json: []
+        rename:
+          headers: []
+        replace:
+          headers: []
+          json: []
+          json_types: []
+      enabled: true
+      name: response-transformer
+      protocols:
+      - grpc
+      - grpcs
+      - http
+      - https
+    preserve_host: false
+    protocols:
+    - http
+    regex_priority: 0
+    request_buffering: true
+    response_buffering: true
+    strip_path: true
+  tags:
+  - _KonnectService:WorldTimeAPI
+  write_timeout: 60000

@@ -12,5 +12,5 @@ jobs:
       steps:
         - uses: actions/checkout@v3
         - uses: superfly/flyctl-actions/setup-flyctl@master
-        - run: source bin/getDeck.sh
-        - run: deck diff --konnect-runtime-group-name=fly-io-iad runtime-groups/fly-io-iad
+        - run: source bin/getDeckAction.sh
+        - run: ./deck diff --konnect-runtime-group-name=fly-io-iad runtime-groups/fly-io-iad

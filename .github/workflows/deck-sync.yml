@@ -18,4 +18,5 @@ jobs:
               download_url: "https://github.com/Kong/deck/releases/download/v1.17.1/deck_1.17.1_linux_amd64.tar.gz"
               tarball_binary_path: "${binary}"
               smoke_test: "${binary} version"
-        - run: deck diff --konnect-runtime-group-name=fly-io-iad runtime-groups/fly-io-iad
+        - run: deck diff --konnect-runtime-group-name=fly-io-iad --state runtime-groups/fly-io-iad
+        - run: deck sync --konnect-runtime-group-name=fly-io-iad --state runtime-groups/fly-io-iad

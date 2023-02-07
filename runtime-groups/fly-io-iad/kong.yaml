@@ -61,6 +61,12 @@ consumers:
   - key: Wb51BiNXU5mKwgyhEEdbLsmLSkGF9m51
   username: app_8227093a-f3b1-4b61-b4b9-7fbfe8c6062a
 - acls:
+  - group: 6d9aa23b-2d46-43f1-bfea-6944f9e3ee08
+  custom_id: bb24a212-1ab7-49fa-bf67-d94bb1e1247f
+  keyauth_credentials:
+  - key: KIgrwph900SGs6itFoJqzBcOsh49OlP3
+  username: app_bb5e366e-9e31-4006-a4fb-51c68247c5bc
+- acls:
   - group: ross
   basicauth_credentials:
   - password: aa3ba7e93d8fc6806be5bc6f203f37d282d6f0bb

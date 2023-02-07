@@ -1,6 +1,69 @@
 _format_version: "3.0"
 _konnect:
   runtime_group_name: fly-io-iad
+consumers:
+- acls:
+  - group: anonymous
+  plugins:
+  - config:
+      consumer_groups: null
+      dictionary_name: kong_rate_limiting_counters
+      disable_penalty: false
+      enforce_consumer_groups: false
+      error_code: 429
+      error_message: API rate limit exceeded
+      header_name: null
+      hide_client_headers: false
+      identifier: consumer
+      limit:
+      - 5
+      namespace: 1zQRNYaVfOVp7SmpDSMk8kw1FleURUAi
+      path: null
+      redis:
+        cluster_addresses: null
+        connect_timeout: null
+        database: 0
+        host: fly-kong-cache.upstash.io
+        keepalive_backlog: null
+        keepalive_pool_size: 30
+        password: f072e50ecb8643a0844c65915b65f4f7
+        port: 6379
+        read_timeout: null
+        send_timeout: null
+        sentinel_addresses: null
+        sentinel_master: null
+        sentinel_password: null
+        sentinel_role: null
+        sentinel_username: null
+        server_name: null
+        ssl: false
+        ssl_verify: false
+        timeout: 2000
+        username: null
+      retry_after_jitter_max: 0
+      strategy: redis
+      sync_rate: 10
+      window_size:
+      - 60
+      window_type: fixed
+    enabled: true
+    name: rate-limiting-advanced
+    protocols:
+    - grpc
+    - grpcs
+    - http
+    - https
+  username: anonymous
+- custom_id: aed343fc-64b9-4fc2-9625-879b07b25053
+  keyauth_credentials:
+  - key: Wb51BiNXU5mKwgyhEEdbLsmLSkGF9m51
+  username: app_8227093a-f3b1-4b61-b4b9-7fbfe8c6062a
+- acls:
+  - group: ross
+  basicauth_credentials:
+  - password: aa3ba7e93d8fc6806be5bc6f203f37d282d6f0bb
+    username: ross
+  username: ross
 plugins:
 - config:
     bypass_on_err: false
@@ -45,7 +108,7 @@ plugins:
     strategy: redis
     vary_headers: null
     vary_query_params: null
-  enabled: true
+  enabled: false
   name: proxy-cache-advanced
   protocols:
   - grpc
@@ -106,6 +169,88 @@ services:
   host: api.nasa.gov
   name: apod
   path: /planetary/apod
+  plugins:
+  - config:
+      allow:
+      - anonymous
+      - ross
+      deny: null
+      hide_groups_header: false
+    enabled: true
+    name: acl
+    protocols:
+    - grpc
+    - grpcs
+    - http
+    - https
+  - config:
+      anonymous: anonymous
+      hide_credentials: false
+    enabled: true
+    name: basic-auth
+    protocols:
+    - grpc
+    - grpcs
+    - http
+    - https
+    - ws
+    - wss
+  - config:
+      credentials: false
+      exposed_headers: null
+      headers: null
+      max_age: null
+      methods:
+      - GET
+      - HEAD
+      - PUT
+      - PATCH
+      - POST
+      - DELETE
+      - OPTIONS
+      - TRACE
+      - CONNECT
+      origins:
+      - https://portal.ross.dev
+      preflight_continue: false
+    enabled: true
+    name: cors
+    protocols:
+    - grpc
+    - grpcs
+    - http
+    - https
+  - config:
+      add:
+        body: []
+        headers: []
+        querystring:
+        - api_key:IkwExPgnOVMV1P3F67zP4BN0XEekYzRH8aonPYmb
+      append:
+        body: []
+        headers: []
+        querystring: []
+      http_method: null
+      remove:
+        body: []
+        headers: []
+        querystring: []
+      rename:
+        body: []
+        headers: []
+        querystring: []
+      replace:
+        body: []
+        headers: []
+        querystring: []
+        uri: null
+    enabled: true
+    name: request-transformer
+    protocols:
+    - grpc
+    - grpcs
+    - http
+    - https
   port: 443
   protocol: https
   read_timeout: 60000
@@ -120,38 +265,6 @@ services:
     path_handling: v0
     paths:
     - /apod
-    plugins:
-    - config:
-        add:
-          body: []
-          headers: []
-          querystring:
-          - api_key:IkwExPgnOVMV1P3F67zP4BN0XEekYzRH8aonPYmb
-        append:
-          body: []
-          headers: []
-          querystring: []
-        http_method: null
-        remove:
-          body: []
-          headers: []
-          querystring: []
-        rename:
-          body: []
-          headers: []
-          querystring: []
-        replace:
-          body: []
-          headers: []
-          querystring: []
-          uri: null
-      enabled: true
-      name: request-transformer
-      protocols:
-      - grpc
-      - grpcs
-      - http
-      - https
     preserve_host: false
     protocols:
     - http
@@ -216,10 +329,85 @@ services:
   - _KonnectService:Mockbin
   write_timeout: 60000
 - connect_timeout: 60000
+  enabled: false
+  host: grpcbin.fly.dev
+  name: grpcbin
+  port: 443
+  protocol: grpcs
+  read_timeout: 60000
+  retries: 1
+  routes:
+  - hosts:
+    - grpc.ross.dev
+    https_redirect_status_code: 426
+    name: grpcbin
+    path_handling: v0
+    paths:
+    - /
+    preserve_host: false
+    protocols:
+    - grpc
+    regex_priority: 0
+    request_buffering: true
+    response_buffering: true
+    strip_path: false
+  write_timeout: 60000
+- connect_timeout: 60000
   enabled: true
   host: api.wheretheiss.at
   name: whereistheiss
   path: /v1/satellites/25544
+  plugins:
+  - config:
+      allow:
+      - anonymous
+      - ross
+      deny: null
+      hide_groups_header: false
+    enabled: true
+    name: acl
+    protocols:
+    - grpc
+    - grpcs
+    - http
+    - https
+  - config:
+      anonymous: anonymous
+      hide_credentials: false
+    enabled: true
+    name: basic-auth
+    protocols:
+    - grpc
+    - grpcs
+    - http
+    - https
+    - ws
+    - wss
+  - config:
+      credentials: false
+      exposed_headers: null
+      headers: null
+      max_age: null
+      methods:
+      - GET
+      - HEAD
+      - PUT
+      - PATCH
+      - POST
+      - DELETE
+      - OPTIONS
+      - TRACE
+      - CONNECT
+      origins:
+      - https://portal.ross.dev
+      preflight_continue: false
+    enabled: true
+    name: cors
+    protocols:
+    - grpc
+    - grpcs
+    - http
+    - https
   port: 443
   protocol: https
   read_timeout: 60000
@@ -249,6 +437,154 @@ services:
   host: worldtimeapi.org
   name: worldtimeapi
   path: /api
+  plugins:
+  - config:
+      allow:
+      - anonymous
+      - ross
+      deny: null
+      hide_groups_header: false
+    enabled: true
+    name: acl
+    protocols:
+    - grpc
+    - grpcs
+    - http
+    - https
+  - config:
+      anonymous: anonymous
+      hide_credentials: false
+    enabled: true
+    name: basic-auth
+    protocols:
+    - grpc
+    - grpcs
+    - http
+    - https
+    - ws
+    - wss
+  - config:
+      credentials: false
+      exposed_headers: null
+      headers: null
+      max_age: null
+      methods:
+      - GET
+      - HEAD
+      - PUT
+      - PATCH
+      - POST
+      - DELETE
+      - OPTIONS
+      - TRACE
+      - CONNECT
+      origins:
+      - https://portal.ross.dev
+      preflight_continue: false
+    enabled: true
+    name: cors
+    protocols:
+    - grpc
+    - grpcs
+    - http
+    - https
+  - config:
+      bypass_on_err: false
+      cache_control: false
+      cache_ttl: 300
+      content_type:
+      - application/json; charset=utf-8
+      memory:
+        dictionary_name: kong_db_cache
+      redis:
+        cluster_addresses: null
+        connect_timeout: null
+        database: 0
+        host: fly-kong-cache.upstash.io
+        keepalive_backlog: null
+        keepalive_pool_size: 30
+        password: f072e50ecb8643a0844c65915b65f4f7
+        port: 6379
+        read_timeout: null
+        send_timeout: null
+        sentinel_addresses: null
+        sentinel_master: null
+        sentinel_password: null
+        sentinel_role: null
+        sentinel_username: null
+        server_name: null
+        ssl: false
+        ssl_verify: false
+        timeout: 2000
+        username: null
+      request_method:
+      - GET
+      - HEAD
+      response_code:
+      - 200
+      - 301
+      - 404
+      storage_ttl: null
+      strategy: redis
+      vary_headers: null
+      vary_query_params: null
+    enabled: true
+    name: proxy-cache-advanced
+    protocols:
+    - grpc
+    - grpcs
+    - http
+    - https
+  - config:
+      add:
+        headers:
+        - 'x-kong-analyst: Gartner'
+        if_status: []
+        json: []
+        json_types: []
+      allow:
+        json: null
+      append:
+        headers: []
+        if_status: []
+        json: []
+        json_types: []
+      dots_in_keys: true
+      remove:
+        headers:
+        - x-xss-protestion
+        - fly-request-id
+        - via
+        - x-runtime
+        - x-request-id
+        - x-permitted-cross-domain-policies
+        - x-download-options
+        - x-content-type-options
+        - server
+        - cross-origin-window-policy
+        - access-control-expose-headers
+        if_status: []
+        json: []
+      rename:
+        headers: []
+        if_status: []
+      replace:
+        body: null
+        headers: []
+        if_status: []
+        json: []
+        json_types: []
+      transform:
+        functions: []
+        if_status: []
+        json: []
+    enabled: true
+    name: response-transformer-advanced
+    protocols:
+    - grpc
+    - grpcs
+    - http
+    - https
   port: 80
   protocol: http
   read_timeout: 60000
@@ -263,33 +599,6 @@ services:
     path_handling: v0
     paths:
     - /worldtime
-    plugins:
-    - config:
-        add:
-          headers: []
-          json: []
-          json_types: []
-        append:
-          headers: []
-          json: []
-          json_types: []
-        remove:
-          headers:
-          - Cache-Control
-          json: []
-        rename:
-          headers: []
-        replace:
-          headers: []
-          json: []
-          json_types: []
-      enabled: true
-      name: response-transformer
-      protocols:
-      - grpc
-      - grpcs
-      - http
-      - https
     preserve_host: false
     protocols:
     - http

@@ -54,7 +54,9 @@ consumers:
     - http
     - https
   username: anonymous
-- custom_id: aed343fc-64b9-4fc2-9625-879b07b25053
+- acls:
+  - group: 6d9aa23b-2d46-43f1-bfea-6944f9e3ee08
+  custom_id: aed343fc-64b9-4fc2-9625-879b07b25053
   keyauth_credentials:
   - key: Wb51BiNXU5mKwgyhEEdbLsmLSkGF9m51
   username: app_8227093a-f3b1-4b61-b4b9-7fbfe8c6062a
@@ -200,59 +202,6 @@ services:
   path: /planetary/apod
   plugins:
   - config:
-      add:
-        headers:
-        - 'x-kong-analyst: Gartner'
-        if_status: []
-        json: []
-        json_types: []
-      allow:
-        json: null
-      append:
-        headers: []
-        if_status: []
-        json: []
-        json_types: []
-      dots_in_keys: true
-      remove:
-        headers:
-        - x-xss-protestion
-        - fly-request-id
-        - via
-        - x-runtime
-        - x-request-id
-        - x-permitted-cross-domain-policies
-        - x-download-options
-        - x-content-type-options
-        - server
-        - cross-origin-window-policy
-        - access-control-expose-headers
-        - x-cache
-        - x-vcap-request-id
-        - x-frame-options
-        if_status: []
-        json: []
-      rename:
-        headers: []
-        if_status: []
-      replace:
-        body: null
-        headers: []
-        if_status: []
-        json: []
-        json_types: []
-      transform:
-        functions: []
-        if_status: []
-        json: []
-    enabled: true
-    name: response-transformer-advanced
-    protocols:
-    - grpc
-    - grpcs
-    - http
-    - https
-  - config:
       allow:
       - anonymous
       - ross
@@ -333,6 +282,59 @@ services:
     - grpcs
     - http
     - https
+  - config:
+      add:
+        headers:
+        - 'x-kong-analyst: Gartner'
+        if_status: []
+        json: []
+        json_types: []
+      allow:
+        json: null
+      append:
+        headers: []
+        if_status: []
+        json: []
+        json_types: []
+      dots_in_keys: true
+      remove:
+        headers:
+        - x-xss-protestion
+        - fly-request-id
+        - via
+        - x-runtime
+        - x-request-id
+        - x-permitted-cross-domain-policies
+        - x-download-options
+        - x-content-type-options
+        - server
+        - cross-origin-window-policy
+        - access-control-expose-headers
+        - x-cache
+        - x-vcap-request-id
+        - x-frame-options
+        if_status: []
+        json: []
+      rename:
+        headers: []
+        if_status: []
+      replace:
+        body: null
+        headers: []
+        if_status: []
+        json: []
+        json_types: []
+      transform:
+        functions: []
+        if_status: []
+        json: []
+    enabled: true
+    name: response-transformer-advanced
+    protocols:
+    - grpc
+    - grpcs
+    - http
+    - https
   port: 443
   protocol: https
   read_timeout: 60000
@@ -386,7 +388,7 @@ services:
 - connect_timeout: 60000
   enabled: true
   host: echo.zuplo.io
-  name: echoserver
+  name: echoserver-dp
   path: /
   port: 443
   protocol: https
@@ -400,6 +402,59 @@ services:
     - GET
     name: dp
     path_handling: v0
+    preserve_host: false
+    protocols:
+    - http
+    regex_priority: 0
+    request_buffering: true
+    response_buffering: true
+    strip_path: true
+  tags:
+  - _KonnectService:Mockbin
+  write_timeout: 60000
+- connect_timeout: 60000
+  enabled: true
+  host: echo.zuplo.io
+  name: echoserver-echo
+  path: /
+  plugins:
+  - config:
+      credentials: false
+      exposed_headers: null
+      headers: null
+      max_age: null
+      methods:
+      - GET
+      - HEAD
+      - PUT
+      - PATCH
+      - POST
+      - DELETE
+      - OPTIONS
+      - TRACE
+      - CONNECT
+      origins:
+      - https://portal.ross.dev
+      preflight_continue: false
+    enabled: true
+    name: cors
+    protocols:
+    - grpc
+    - grpcs
+    - http
+    - https
+  port: 443
+  protocol: https
+  read_timeout: 60000
+  retries: 5
+  routes:
+  - hosts:
+    - api.ross.dev
+    https_redirect_status_code: 426
+    name: echo
+    path_handling: v0
+    paths:
+    - /echo
     preserve_host: false
     protocols:
     - http

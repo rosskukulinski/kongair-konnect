@@ -163,6 +163,35 @@ plugins:
   - grpcs
   - http
   - https
+routes:
+- https_redirect_status_code: 426
+  name: catch-all
+  path_handling: v0
+  paths:
+  - /
+  plugins:
+  - config:
+      body: null
+      content_type: null
+      echo: false
+      message: null
+      status_code: 418
+      trigger: null
+    enabled: true
+    name: request-termination
+    protocols:
+    - grpc
+    - grpcs
+    - http
+    - https
+  preserve_host: false
+  protocols:
+  - http
+  - https
+  regex_priority: 0
+  request_buffering: true
+  response_buffering: true
+  strip_path: true
 services:
 - connect_timeout: 60000
   enabled: true
@@ -170,6 +199,59 @@ services:
   name: apod
   path: /planetary/apod
   plugins:
+  - config:
+      add:
+        headers:
+        - 'x-kong-analyst: Gartner'
+        if_status: []
+        json: []
+        json_types: []
+      allow:
+        json: null
+      append:
+        headers: []
+        if_status: []
+        json: []
+        json_types: []
+      dots_in_keys: true
+      remove:
+        headers:
+        - x-xss-protestion
+        - fly-request-id
+        - via
+        - x-runtime
+        - x-request-id
+        - x-permitted-cross-domain-policies
+        - x-download-options
+        - x-content-type-options
+        - server
+        - cross-origin-window-policy
+        - access-control-expose-headers
+        - x-cache
+        - x-vcap-request-id
+        - x-frame-options
+        if_status: []
+        json: []
+      rename:
+        headers: []
+        if_status: []
+      replace:
+        body: null
+        headers: []
+        if_status: []
+        json: []
+        json_types: []
+      transform:
+        functions: []
+        if_status: []
+        json: []
+    enabled: true
+    name: response-transformer-advanced
+    protocols:
+    - grpc
+    - grpcs
+    - http
+    - https
   - config:
       allow:
       - anonymous
@@ -563,6 +645,9 @@ services:
         - server
         - cross-origin-window-policy
         - access-control-expose-headers
+        - x-cache
+        - x-vcap-request-id
+        - x-frame-options
         if_status: []
         json: []
       rename:

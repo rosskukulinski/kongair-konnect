@@ -745,7 +745,6 @@ services:
     path_handling: v0
     paths:
     - /worldtime
-    - /worldtime2
     preserve_host: false
     protocols:
     - http

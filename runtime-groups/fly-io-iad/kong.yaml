@@ -164,7 +164,7 @@ plugins:
     window_size:
     - 60
     window_type: fixed
-  enabled: true
+  enabled: false
   name: rate-limiting-advanced
   protocols:
   - grpc
